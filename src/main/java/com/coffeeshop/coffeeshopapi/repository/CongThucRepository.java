@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CongThucRepository extends JpaRepository<CongThuc, CongThucId> {
 
-    // Lấy danh sách công thức theo mã sản phẩm
+
     List<CongThuc> findByMaSP(String maSP);
 }

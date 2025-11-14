@@ -15,11 +15,11 @@ public class CaLam {
     private String maCa;
 
     @Column(name = "Ca")
-    private String ca; // Sang, Trua, Toi
+    private String ca;
 
     @Column(name = "NgayLam")
     private Date ngayLam;
 
     @Column(name = "MaNV")
-    private String maNV;  // Nhân viên làm ca đó
+    private String maNV;
 }

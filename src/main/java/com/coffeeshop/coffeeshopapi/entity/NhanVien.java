@@ -3,7 +3,7 @@ package com.coffeeshop.coffeeshopapi.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;   // ✅ DÙNG java.sql.Date, KHÔNG phải java.util.Date
+import java.sql.Date;
 
 @Entity
 @Table(name = "NhanVien")

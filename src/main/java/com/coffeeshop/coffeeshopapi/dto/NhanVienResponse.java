@@ -9,7 +9,7 @@ public class NhanVienResponse {
     private String tenNV;
     private String sdt;
     private String gioiTinh;
-    private Date ngaySinh;   // ✔ sửa thành java.sql.Date
+    private Date ngaySinh;
     private Integer luong;
     private String trangThaiLamViec;
     private String chucVu;
