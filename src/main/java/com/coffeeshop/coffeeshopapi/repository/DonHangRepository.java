@@ -1,0 +1,13 @@
+package com.coffeeshop.coffeeshopapi.repository;
+
+import com.coffeeshop.coffeeshopapi.entity.DonHang;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface DonHangRepository extends JpaRepository<DonHang, String> {
+
+    @Query("SELECT MAX(d.maDonHang) FROM DonHang d")
+    String findMaxId();
+}
