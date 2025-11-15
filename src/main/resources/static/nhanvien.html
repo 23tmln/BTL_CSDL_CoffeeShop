@@ -6,37 +6,83 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f4ef;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .header-coffee {
+            background: #6f4e37;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .table-hover tbody tr:hover {
+            background: #fff3dd;
+        }
+
+        .btn-coffee {
+            background: #6f4e37;
+            color: white;
+        }
+        .btn-coffee:hover {
+            background: #5b3f2d;
+            color: white;
+        }
+
+        .modal-content {
+            border-radius: 14px;
+            padding-bottom: 10px;
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
 <div class="container py-4">
 
-    <h2 class="text-center mb-4 text-primary">Quản lý nhân viên</h2>
+    <!-- HEADER -->
+    <div class="header-coffee">
+        <h1 class="mb-0">Quản lý nhân viên</h1>
+        <p class="mb-0">Coffee Shop 36</p>
+    </div>
 
-    <!-- NÚT ĐỔI TRANG -->
     <div class="mb-3">
-        <a href="donhang.html" class="btn btn-secondary">← Quản lý đơn hàng</a>
+        <a href="donhang.html" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left"></i> Trở về quản lý đơn hàng
+        </a>
     </div>
 
     <!-- FORM THÊM NHÂN VIÊN -->
     <div class="card p-4 mb-4">
-        <h4 class="text-primary mb-3">Thêm nhân viên</h4>
+        <h4 class="text-primary mb-3"><i class="bi bi-person-plus"></i> Thêm nhân viên</h4>
 
         <div class="row g-3">
             <div class="col-md-4">
-                <label>Tên NV:</label>
-                <input id="nv_ten" class="form-control" placeholder="Tên nhân viên">
+                <label class="fw-semibold">Tên nhân viên:</label>
+                <input id="nv_ten" class="form-control" placeholder="VD: Nguyễn Văn A">
             </div>
 
             <div class="col-md-3">
-                <label>SĐT:</label>
-                <input id="nv_sdt" class="form-control" placeholder="Số điện thoại">
+                <label class="fw-semibold">Số điện thoại:</label>
+                <input id="nv_sdt" class="form-control" placeholder="VD: 0987654321">
             </div>
 
             <div class="col-md-2">
-                <label>Giới tính:</label>
-                <select id="nv_gioitinh" class="form-control">
+                <label class="fw-semibold">Giới tính:</label>
+                <select id="nv_gioitinh" class="form-select">
                     <option value="">-- Chọn --</option>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
@@ -44,32 +90,34 @@
             </div>
 
             <div class="col-md-3">
-                <label>Ngày sinh:</label>
+                <label class="fw-semibold">Ngày sinh:</label>
                 <input id="nv_ngaysinh" type="date" class="form-control">
             </div>
 
             <div class="col-md-12 mt-3">
-                <button onclick="createNhanVien()" class="btn btn-success w-100">Thêm nhân viên</button>
+                <button onclick="createNhanVien()" class="btn btn-coffee w-100">
+                    <i class="bi bi-save"></i> Thêm nhân viên
+                </button>
             </div>
         </div>
     </div>
 
     <!-- DANH SÁCH NHÂN VIÊN -->
     <div class="card p-4">
-        <h4 class="text-secondary mb-3">Danh sách nhân viên</h4>
+        <h4 class="text-secondary mb-3"><i class="bi bi-list-ul"></i> Danh sách nhân viên</h4>
 
-        <table class="table table-bordered" id="tableNhanVien">
+        <table class="table table-hover table-bordered" id="tableNhanVien">
             <thead class="table-light">
             <tr>
                 <th>Mã NV</th>
-                <th>Tên</th>
+                <th>Tên nhân viên</th>
                 <th>SĐT</th>
                 <th>Giới tính</th>
                 <th>Ngày sinh</th>
                 <th>Lương</th>
                 <th>Trạng thái</th>
                 <th>Chức vụ</th>
-                <th>Hành động</th>
+                <th class="text-center">Hành động</th>
             </tr>
             </thead>
             <tbody></tbody>
@@ -78,47 +126,47 @@
 
 </div>
 
-<!-- POPUP SỬA -->
+<!-- MODAL SỬA NHÂN VIÊN -->
 <div class="modal fade" id="editNVModal">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-header bg-warning">
-                <h5 class="modal-title">Sửa nhân viên</h5>
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Sửa nhân viên</h5>
                 <button class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
 
-                <label>Mã NV:</label>
+                <label class="fw-semibold">Mã NV:</label>
                 <input id="edit_nv_ma" class="form-control mb-3" readonly>
 
-                <label>Tên nhân viên:</label>
+                <label class="fw-semibold">Tên nhân viên:</label>
                 <input id="edit_nv_ten" class="form-control mb-3">
 
-                <label>SĐT:</label>
+                <label class="fw-semibold">SĐT:</label>
                 <input id="edit_nv_sdt" class="form-control mb-3">
 
-                <label>Giới tính:</label>
-                <select id="edit_nv_gioitinh" class="form-control mb-3">
+                <label class="fw-semibold">Giới tính:</label>
+                <select id="edit_nv_gioitinh" class="form-select mb-3">
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
                 </select>
 
-                <label>Ngày sinh:</label>
+                <label class="fw-semibold">Ngày sinh:</label>
                 <input id="edit_nv_ngaysinh" type="date" class="form-control mb-3">
 
-                <label>Lương:</label>
+                <label class="fw-semibold">Lương:</label>
                 <input id="edit_nv_luong" type="number" class="form-control mb-3">
 
-                <label>Trạng thái:</label>
-                <select id="edit_nv_trangthai" class="form-control mb-3">
+                <label class="fw-semibold">Trạng thái:</label>
+                <select id="edit_nv_trangthai" class="form-select mb-3">
                     <option value="Đang làm">Đang làm</option>
                     <option value="Nghỉ việc">Nghỉ việc</option>
                 </select>
 
-                <label>Chức vụ:</label>
-                <select id="edit_nv_chucvu" class="form-control mb-3">
+                <label class="fw-semibold">Chức vụ:</label>
+                <select id="edit_nv_chucvu" class="form-select mb-3">
                     <option value="Phục vụ">Phục vụ</option>
                     <option value="Pha chế">Pha chế</option>
                     <option value="Quản lý">Quản lý</option>
@@ -127,14 +175,15 @@
             </div>
 
             <div class="modal-footer">
-                <button onclick="updateNhanVien()" class="btn btn-primary">Lưu thay đổi</button>
+                <button onclick="updateNhanVien()" class="btn btn-primary w-100">
+                    <i class="bi bi-save2"></i> Lưu thay đổi
+                </button>
             </div>
 
         </div>
     </div>
 </div>
 
-<!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
@@ -158,9 +207,13 @@
                 <td>${nv.luong.toLocaleString()}</td>
                 <td>${nv.trangThaiLamViec}</td>
                 <td>${nv.chucVu}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editNhanVien('${nv.maNV}')">Sửa</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNhanVien('${nv.maNV}')">Xóa</button>
+                <td class="text-center">
+                    <button class="btn btn-warning btn-sm" onclick="editNhanVien('${nv.maNV}')">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteNhanVien('${nv.maNV}')">
+                      <i class="bi bi-trash"></i>
+                    </button>
                 </td>
             </tr>`;
         });
@@ -168,22 +221,17 @@
 
     // THÊM NHÂN VIÊN
     async function createNhanVien() {
-        let tenNV = document.getElementById("nv_ten").value.trim();
-        let sdt = document.getElementById("nv_sdt").value.trim();
-        let gioiTinh = document.getElementById("nv_gioitinh").value;
-        let ngaySinh = document.getElementById("nv_ngaysinh").value;
+        let tenNV = nv_ten.value.trim();
+        let sdt = nv_sdt.value.trim();
+        let gioiTinh = nv_gioitinh.value;
+        let ngaySinh = nv_ngaysinh.value;
 
         if (!tenNV || !sdt || !gioiTinh || !ngaySinh) {
             alert("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
-        let body = {
-            tenNV,
-            sdt,
-            gioiTinh,
-            ngaySinh
-        };
+        let body = { tenNV, sdt, gioiTinh, ngaySinh };
 
         let res = await fetch("http://localhost:8080/api/nhanvien", {
             method: "POST",
@@ -199,35 +247,35 @@
         }
     }
 
-    // SỬA NHÂN VIÊN
+    // LOAD THÔNG TIN LÊN MODAL
     async function editNhanVien(maNV) {
         let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV);
         let nv = await res.json();
 
-        document.getElementById("edit_nv_ma").value = nv.maNV;
-        document.getElementById("edit_nv_ten").value = nv.tenNV;
-        document.getElementById("edit_nv_sdt").value = nv.sdt;
-        document.getElementById("edit_nv_gioitinh").value = nv.gioiTinh;
-        document.getElementById("edit_nv_ngaysinh").value = nv.ngaySinh;
-        document.getElementById("edit_nv_luong").value = nv.luong;
-        document.getElementById("edit_nv_trangthai").value = nv.trangThaiLamViec;
-        document.getElementById("edit_nv_chucvu").value = nv.chucVu;
+        edit_nv_ma.value = nv.maNV;
+        edit_nv_ten.value = nv.tenNV;
+        edit_nv_sdt.value = nv.sdt;
+        edit_nv_gioitinh.value = nv.gioiTinh;
+        edit_nv_ngaysinh.value = nv.ngaySinh;
+        edit_nv_luong.value = nv.luong;
+        edit_nv_trangthai.value = nv.trangThaiLamViec;
+        edit_nv_chucvu.value = nv.chucVu;
 
-        new bootstrap.Modal(document.getElementById("editNVModal")).show();
+        new bootstrap.Modal(editNVModal).show();
     }
 
     // UPDATE
     async function updateNhanVien() {
-        let maNV = document.getElementById("edit_nv_ma").value;
+        let maNV = edit_nv_ma.value;
 
         let body = {
-            tenNV: document.getElementById("edit_nv_ten").value,
-            sdt: document.getElementById("edit_nv_sdt").value,
-            gioiTinh: document.getElementById("edit_nv_gioitinh").value,
-            ngaySinh: document.getElementById("edit_nv_ngaysinh").value,
-            luong: parseInt(document.getElementById("edit_nv_luong").value),
-            trangThaiLamViec: document.getElementById("edit_nv_trangthai").value,
-            chucVu: document.getElementById("edit_nv_chucvu").value
+            tenNV: edit_nv_ten.value,
+            sdt: edit_nv_sdt.value,
+            gioiTinh: edit_nv_gioitinh.value,
+            ngaySinh: edit_nv_ngaysinh.value,
+            luong: parseInt(edit_nv_luong.value),
+            trangThaiLamViec: edit_nv_trangthai.value,
+            chucVu: edit_nv_chucvu.value
         };
 
         let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV, {
@@ -239,29 +287,26 @@
         if (res.ok) {
             alert("Cập nhật thành công!");
             loadNhanVien();
-            bootstrap.Modal.getInstance(document.getElementById("editNVModal")).hide();
+            bootstrap.Modal.getInstance(editNVModal).hide();
         } else {
             alert("Lỗi cập nhật!");
         }
     }
 
-    // DELETE
+    // XÓA
     async function deleteNhanVien(maNV) {
         if (!confirm("Bạn chắc chắn muốn xóa nhân viên này?")) return;
 
-        let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV, {
-            method: "DELETE"
-        });
+        let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV, { method: "DELETE" });
 
         if (res.ok) {
             alert("Đã xóa!");
             loadNhanVien();
-        } else {
-            alert("Không thể xóa!");
-        }
+        } else alert("Không thể xóa!");
     }
 
     loadNhanVien();
+
 </script>
 
 </body>
