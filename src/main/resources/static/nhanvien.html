@@ -45,11 +45,6 @@
             background: #5b3f2d;
             color: white;
         }
-
-        .modal-content {
-            border-radius: 14px;
-            padding-bottom: 10px;
-        }
     </style>
 </head>
 
@@ -57,9 +52,8 @@
 
 <div class="container py-4">
 
-    <!-- HEADER (CÓ LOGO + SLOGAN) -->
+    <!-- HEADER -->
     <div class="header-coffee d-flex align-items-center justify-content-center gap-4">
-
         <img src="/thanhhoacoffe.jpg"
              style="width: 120px; height: 120px; border-radius: 50%; background:white; padding:6px; object-fit: cover;">
 
@@ -67,7 +61,6 @@
             <h1 class="mb-0">Quản lý nhân viên</h1>
             <p class="mt-1 mb-0">Coffee Shop 36 — Ở Đây Có Cà Phê Ngon Hơn NYC Của Bạn</p>
         </div>
-
     </div>
 
     <div class="mb-3">
@@ -76,32 +69,28 @@
         </a>
     </div>
 
-    <!-- FORM THÊM NHÂN VIÊN -->
+    <!-- FORM THÊM -->
     <div class="card p-4 mb-4">
         <h4 class="text-primary mb-3"><i class="bi bi-person-plus"></i> Thêm nhân viên</h4>
 
         <div class="row g-3">
             <div class="col-md-4">
-                <label class="fw-semibold">Tên nhân viên:</label>
-                <input id="nv_ten" class="form-control" placeholder="VD: Nguyễn Văn A">
+                <input id="nv_ten" class="form-control" placeholder="Tên nhân viên">
             </div>
 
             <div class="col-md-3">
-                <label class="fw-semibold">Số điện thoại:</label>
-                <input id="nv_sdt" class="form-control" placeholder="VD: 0987654321">
+                <input id="nv_sdt" class="form-control" placeholder="SĐT">
             </div>
 
             <div class="col-md-2">
-                <label class="fw-semibold">Giới tính:</label>
                 <select id="nv_gioitinh" class="form-select">
-                    <option value="">-- Chọn --</option>
+                    <option value="">Giới tính</option>
                     <option value="Nam">Nam</option>
                     <option value="Nữ">Nữ</option>
                 </select>
             </div>
 
             <div class="col-md-3">
-                <label class="fw-semibold">Ngày sinh:</label>
                 <input id="nv_ngaysinh" type="date" class="form-control">
             </div>
 
@@ -113,7 +102,14 @@
         </div>
     </div>
 
-    <!-- DANH SÁCH NHÂN VIÊN -->
+    <!-- TÌM KIẾM -->
+    <div class="input-group mb-3">
+        <input id="searchNV" class="form-control" placeholder="Tìm theo mã, tên, hoặc SĐT...">
+        <button class="btn btn-coffee" onclick="searchNhanVien()"><i class="bi bi-search"></i> Tìm</button>
+        <button class="btn btn-secondary" onclick="loadNhanVien()"><i class="bi bi-arrow-repeat"></i> Reset</button>
+    </div>
+
+    <!-- DANH SÁCH -->
     <div class="card p-4">
         <h4 class="text-secondary mb-3"><i class="bi bi-list-ul"></i> Danh sách nhân viên</h4>
 
@@ -137,7 +133,7 @@
 
 </div>
 
-<!-- MODAL SỬA NHÂN VIÊN -->
+<!-- MODAL SỬA -->
 <div class="modal fade" id="editNVModal">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -149,8 +145,8 @@
 
             <div class="modal-body">
 
-                <label class="fw-semibold">Mã NV:</label>
-                <input id="edit_nv_ma" class="form-control mb-3" readonly>
+                <!-- HIDDEN MÃ NV -->
+                <input id="edit_nv_ma" type="hidden">
 
                 <label class="fw-semibold">Tên nhân viên:</label>
                 <input id="edit_nv_ten" class="form-control mb-3">
@@ -195,54 +191,69 @@
     </div>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
-    // LOAD DS NHÂN VIÊN
+    // ============================
+    // LOAD DANH SÁCH
+    // ============================
     async function loadNhanVien() {
         let res = await fetch("http://localhost:8080/api/nhanvien");
-        let data = await res.json();
+        renderTable(await res.json());
+    }
 
+    function renderTable(data) {
         let tb = document.querySelector("#tableNhanVien tbody");
         tb.innerHTML = "";
 
         data.forEach(nv => {
             tb.innerHTML += `
-            <tr>
-                <td>${nv.maNV}</td>
-                <td>${nv.tenNV}</td>
-                <td>${nv.sdt}</td>
-                <td>${nv.gioiTinh}</td>
-                <td>${nv.ngaySinh}</td>
-                <td>${nv.luong.toLocaleString()}</td>
-                <td>${nv.trangThaiLamViec}</td>
-                <td>${nv.chucVu}</td>
-                <td class="text-center">
-                    <button class="btn btn-warning btn-sm" onclick="editNhanVien('${nv.maNV}')">
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNhanVien('${nv.maNV}')">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>`;
+                <tr>
+                    <td>${nv.maNV}</td>
+                    <td>${nv.tenNV}</td>
+                    <td>${nv.sdt}</td>
+                    <td>${nv.gioiTinh}</td>
+                    <td>${nv.ngaySinh}</td>
+                    <td>${nv.luong.toLocaleString()}</td>
+                    <td>${nv.trangThaiLamViec}</td>
+                    <td>${nv.chucVu}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning btn-sm" onclick="editNhanVien('${nv.maNV}')">
+                          <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNhanVien('${nv.maNV}')">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
         });
     }
 
+    // ============================
+    // TÌM KIẾM
+    // ============================
+    async function searchNhanVien() {
+        let keyword = searchNV.value.trim();
+        if (!keyword) return loadNhanVien();
+
+        let res = await fetch(`http://localhost:8080/api/nhanvien/search?keyword=${keyword}`);
+        renderTable(await res.json());
+    }
+
+    // ============================
     // THÊM NHÂN VIÊN
+    // ============================
     async function createNhanVien() {
-        let tenNV = nv_ten.value.trim();
-        let sdt = nv_sdt.value.trim();
-        let gioiTinh = nv_gioitinh.value;
-        let ngaySinh = nv_ngaysinh.value;
 
-        if (!tenNV || !sdt || !gioiTinh || !ngaySinh) {
-            alert("Vui lòng nhập đầy đủ thông tin!");
-            return;
-        }
-
-        let body = { tenNV, sdt, gioiTinh, ngaySinh };
+        let body = {
+            tenNV: nv_ten.value,
+            sdt: nv_sdt.value,
+            gioiTinh: nv_gioitinh.value,
+            ngaySinh: nv_ngaysinh.value
+        };
 
         let res = await fetch("http://localhost:8080/api/nhanvien", {
             method: "POST",
@@ -251,18 +262,21 @@
         });
 
         if (res.ok) {
-            alert("Thêm nhân viên thành công!");
+            alert("Thêm thành công!");
             loadNhanVien();
         } else {
-            alert("Lỗi thêm nhân viên!");
+            alert("Lỗi thêm!");
         }
     }
 
-    // LOAD THÔNG TIN LÊN MODAL
+    // ============================
+    // SỬA NHÂN VIÊN
+    // ============================
     async function editNhanVien(maNV) {
         let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV);
         let nv = await res.json();
 
+        // Gán dữ liệu vào input hidden và các trường khác
         edit_nv_ma.value = nv.maNV;
         edit_nv_ten.value = nv.tenNV;
         edit_nv_sdt.value = nv.sdt;
@@ -272,22 +286,25 @@
         edit_nv_trangthai.value = nv.trangThaiLamViec;
         edit_nv_chucvu.value = nv.chucVu;
 
-        new bootstrap.Modal(editNVModal).show();
+        new bootstrap.Modal(document.getElementById("editNVModal")).show();
     }
 
-    // UPDATE
+    // ============================
+    // UPDATE NHÂN VIÊN
+    // ============================
     async function updateNhanVien() {
-        let maNV = edit_nv_ma.value;
 
         let body = {
             tenNV: edit_nv_ten.value,
             sdt: edit_nv_sdt.value,
             gioiTinh: edit_nv_gioitinh.value,
             ngaySinh: edit_nv_ngaysinh.value,
-            luong: parseInt(edit_nv_luong.value),
+            luong: Number(edit_nv_luong.value),
             trangThaiLamViec: edit_nv_trangthai.value,
             chucVu: edit_nv_chucvu.value
         };
+
+        let maNV = edit_nv_ma.value;
 
         let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV, {
             method: "PUT",
@@ -304,16 +321,18 @@
         }
     }
 
+    // ============================
     // XÓA
+    // ============================
     async function deleteNhanVien(maNV) {
-        if (!confirm("Bạn chắc chắn muốn xóa nhân viên này?")) return;
+        if (!confirm("Xóa nhân viên này?")) return;
 
         let res = await fetch("http://localhost:8080/api/nhanvien/" + maNV, { method: "DELETE" });
 
         if (res.ok) {
             alert("Đã xóa!");
             loadNhanVien();
-        } else alert("Không thể xóa!");
+        }
     }
 
     loadNhanVien();

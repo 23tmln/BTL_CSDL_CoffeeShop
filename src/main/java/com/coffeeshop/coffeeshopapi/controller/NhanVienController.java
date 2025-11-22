@@ -2,9 +2,9 @@ package com.coffeeshop.coffeeshopapi.controller;
 
 import com.coffeeshop.coffeeshopapi.dto.NhanVienRequest;
 import com.coffeeshop.coffeeshopapi.dto.NhanVienResponse;
-import com.coffeeshop.coffeeshopapi.entity.NhanVien;
 import com.coffeeshop.coffeeshopapi.service.NhanVienService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,5 +43,11 @@ public class NhanVienController {
     public String delete(@PathVariable String id) {
         service.delete(id);
         return "Đã xóa nhân viên: " + id;
+    }
+
+    // 🔥 API TÌM KIẾM NHÂN VIÊN
+    @GetMapping("/search")
+    public ResponseEntity<List<NhanVienResponse>> searchNhanVien(@RequestParam String keyword) {
+        return ResponseEntity.ok(service.search(keyword));  // SỬ DỤNG service !!!
     }
 }

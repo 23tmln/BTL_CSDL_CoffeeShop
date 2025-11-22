@@ -76,6 +76,13 @@ public class NhanVienService {
         nvRepo.deleteById(id);
     }
 
+    // SEARCH
+    public List<NhanVienResponse> search(String keyword) {
+        return nvRepo.search(keyword).stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
     // Convert Entity → DTO
     private NhanVienResponse convertToDto(NhanVien nv) {
         NhanVienResponse dto = new NhanVienResponse();
