@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Coffee Shop 36</title>
 
-  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -22,6 +21,29 @@
       margin-bottom: 30px;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
+
+    /* ================= NAV STYLE =================== */
+    .nav-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: white;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .nav-btn:hover {
+      background: #f0f0f0;
+      color: #000;
+    }
+
+    .nav-btn-active {
+      background: #6f4e37 !important;
+      border-color: #6f4e37 !important;
+      color: white !important;
+    }
+    /* ================================================= */
 
     .card {
       border-radius: 12px;
@@ -64,7 +86,6 @@
 <body>
 <div class="container py-4">
 
-  <!-- ===== HEADER + LOGO ===== -->
   <div class="header-coffee d-flex align-items-center justify-content-center gap-4">
 
     <img src="/thanhhoacoffe.jpg"
@@ -77,15 +98,27 @@
 
   </div>
 
+  <div class="mb-4 text-end d-flex justify-content-end gap-2">
 
-  <!-- LINK NHÂN VIÊN -->
-  <div class="mb-4 text-end">
-    <a href="nhanvien.html" class="btn btn-outline-dark">
-      <i class="bi bi-people-fill"></i> Quản lý nhân viên
+    <a href="donhang.html" class="nav-btn" data-page="donhang">
+      <i class="bi bi-receipt"></i> Đơn hàng
     </a>
+
+    <a href="nhanvien.html" class="nav-btn" data-page="nhanvien">
+      <i class="bi bi-people-fill"></i> Nhân viên
+    </a>
+
+    <a href="dashboard.html" class="nav-btn" data-page="dashboard">
+      <i class="bi bi-bar-chart-fill"></i> Dashboard
+    </a>
+
+    <a href="nhanvien-dashboard.html" class="nav-btn" data-page="nv-dashboard">
+      <i class="bi bi-person-badge-fill"></i> Dashboard nhân viên
+    </a>
+
   </div>
 
-  <!-- ================= TẠO ĐƠN ================= -->
+
   <div class="card p-4 mb-4">
     <h4 class="mb-3 text-coffee"><i class="bi bi-receipt-cutoff"></i> Tạo đơn hàng mới</h4>
 
@@ -131,7 +164,6 @@
     </button>
   </div>
 
-  <!-- ================= DANH SÁCH ĐƠN ================= -->
   <div class="card p-4">
 
     <h4 class="mb-3"><i class="bi bi-card-list"></i> Danh sách đơn hàng</h4>
@@ -164,10 +196,6 @@
   </div>
 </div>
 
-
-<!-- ========================================================= -->
-<!-- ===================== MODAL SỬA ========================= -->
-<!-- ========================================================= -->
 
 <div class="modal fade" id="editModal">
   <div class="modal-dialog modal-lg">
@@ -213,20 +241,13 @@
 </div>
 
 
-
-<!-- ========================================================= -->
-<!-- ===================== MODAL BILL ======================== -->
-<!-- ========================================================= -->
-
 <div class="modal fade" id="billModal">
   <div class="modal-dialog">
     <div class="modal-content p-4" id="billContent">
 
       <div class="text-center mb-2">
-        <!-- Logo to -->
         <img src="/thanhhoacoffe.jpg"
              style="width:110px; height:110px; border-radius:50%; background:white; padding:8px; margin-bottom:8px;">
-        <!-- Tên quán nhỏ lại -->
         <h3 class="mt-1" style="font-size:22px; font-weight:600;">COFFEE SHOP 36</h3>
       </div>
 
@@ -249,7 +270,6 @@
         <tbody id="bill_items"></tbody>
       </table>
 
-      <!-- QR CODE THANH TOÁN -->
       <div class="text-center mt-4">
         <img src="/QR.jpg"
              style="width:180px; height:180px; border-radius:12px; margin-bottom:10px;">
@@ -263,24 +283,16 @@
       </button>
 
     </div>
-
-
   </div>
 </div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- ========================================================= -->
-<!-- ===================== JAVASCRIPT ========================= -->
-<!-- ========================================================= -->
-
 <script>
-
   let items = [];
   let editItems = [];
 
-  // LOAD SẢN PHẨM
   async function loadSanPham() {
     let res = await fetch("http://localhost:8080/api/sanpham");
     let data = await res.json();
@@ -296,7 +308,6 @@
     });
   }
 
-  // THÊM SẢN PHẨM
   function addItem() {
     let maSP = document.getElementById("selectSP").value;
     let soLuong = parseInt(document.getElementById("soLuongSP").value);
@@ -335,7 +346,6 @@
     renderTable();
   }
 
-  // TẠO ĐƠN
   async function createOrder() {
     let maKH = document.getElementById("maKH").value;
 
@@ -361,7 +371,6 @@
     } else alert("Lỗi tạo đơn!");
   }
 
-  // LOAD DANH SÁCH ĐƠN
   async function loadDonHang() {
     let res = await fetch("http://localhost:8080/api/donhang");
     let data = await res.json();
@@ -392,7 +401,6 @@
     });
   }
 
-  // TÌM KIẾM
   async function searchOrder() {
     let id = document.getElementById("searchMaDH").value.trim();
 
@@ -426,7 +434,6 @@
     </tr>`;
   }
 
-  // XÓA
   async function deleteOrder(id) {
     if (!confirm("Bạn chắc muốn xóa đơn này?")) return;
 
@@ -438,7 +445,6 @@
     } else alert("Lỗi xóa!");
   }
 
-  // SỬA
   async function editOrder(id) {
     let res = await fetch("http://localhost:8080/api/donhang/" + id);
     if (!res.ok) return alert("Không tìm thấy đơn!");
@@ -515,7 +521,6 @@
     } else alert("Lỗi khi sửa!");
   }
 
-  // IN BILL
   async function printBill(maDH) {
     let res = await fetch("http://localhost:8080/api/donhang/" + maDH);
     if (!res.ok) return alert("Không tìm thấy đơn!");
@@ -542,11 +547,39 @@
     new bootstrap.Modal(document.getElementById("billModal")).show();
   }
 
-  // KHỞI ĐỘNG
+  // === Logic Active Button ===
+  (function() {
+    const path = window.location.pathname;
+
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      const page = btn.getAttribute("data-page");
+      const fileName = path.split('/').pop();
+
+      // Logic chính xác: Kiểm tra tên file
+      if (page === "donhang" && fileName.includes("donhang.html"))
+        btn.classList.add("nav-btn-active");
+
+      if (page === "nhanvien" && fileName.includes("nhanvien.html"))
+        btn.classList.add("nav-btn-active");
+
+      if (page === "Thống Kê" && fileName.includes("dashboard.html"))
+        btn.classList.add("nav-btn-active");
+
+      if (page === "nv-dashboard" && fileName.includes("nhanvien-dashboard.html"))
+        btn.classList.add("nav-btn-active");
+    });
+
+    // Xử lý trường hợp trang gốc (index.html hoặc URL không có tên file)
+    if (path.endsWith("donhang.html") || path.endsWith("/")) {
+      document.querySelector('[data-page="donhang"]').classList.add("nav-btn-active");
+    }
+
+  })();
+  // ==========================
+
   loadSanPham();
   loadDonHang();
 
 </script>
-
 </body>
 </html>

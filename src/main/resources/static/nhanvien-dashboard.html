@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Nhân viên - Coffee Shop 36</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: #f8f4ef;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .header-coffee {
+      background: #6f4e37;
+      padding: 20px;
+      border-radius: 12px;
+      color: white;
+      margin-bottom: 30px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+
+    .header-coffee img {
+      box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    }
+
+    .card {
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: none;
+    }
+
+    .stat-card { color: #fff; }
+    .stat-brown { background: #6f4e37; }
+    .stat-green { background: #1f7a3a; }
+    .stat-orange { background: #e67e22; }
+    .stat-blue { background: #2980b9; }
+    .stat-purple { background: #8e44ad; }
+
+    .stat-value { font-size: 22px; font-weight: 700; }
+    .stat-label { font-size: 13px; opacity: 0.9; }
+
+    .table-hover tbody tr:hover { background: #fff8e1; }
+
+    .nav-btn {
+      border-radius: 8px;
+      font-weight: 500;
+      padding-inline: 16px;
+    }
+
+    .nav-btn-active {
+      background: #6f4e37 !important;
+      border-color: #6f4e37 !important;
+      color: #fff !important;
+    }
+
+    .nav-btn:not(.nav-btn-active) {
+      background: #ffffff;
+      color: #333;
+    }
+
+    .nav-btn:not(.nav-btn-active):hover {
+      background: #f0f0f0;
+      color: #000;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <!-- HEADER -->
+  <div class="header-coffee d-flex align-items-center justify-content-center gap-4">
+    <img src="/thanhhoacoffe.jpg"
+         style="width: 120px; height: 120px; border-radius: 50%; background:white; padding:6px; object-fit: cover;">
+    <div class="text-center">
+      <h1 class="mb-0">Dashboard Nhân viên</h1>
+      <p class="mt-1 mb-0">Coffee Shop 36 — Hiệu suất làm việc theo từng nhân viên</p>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="mb-4 text-end d-flex justify-content-end gap-2">
+    <a href="donhang.html" class="btn btn-outline-dark nav-btn" data-page="donhang">
+      <i class="bi bi-receipt"></i> Đơn hàng
+    </a>
+    <a href="nhanvien.html" class="btn btn-outline-dark nav-btn" data-page="nhanvien">
+      <i class="bi bi-people-fill"></i> Nhân viên
+    </a>
+    <a href="dashboard.html" class="btn btn-outline-dark nav-btn" data-page="baocao">
+      <i class="bi bi-bar-chart-fill"></i> Dashboard
+    </a>
+    <a href="nhanvien-dashboard.html" class="btn btn-outline-dark nav-btn" data-page="nv-dashboard">
+      <i class="bi bi-person-badge-fill"></i> Dashboard nhân viên
+    </a>
+  </div>
+
+  <!-- BỘ LỌC -->
+  <div class="card p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0"><i class="bi bi-funnel"></i> Bộ lọc</h5>
+      <small class="text-muted" id="nvInfoSmall">Chưa chọn nhân viên</small>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Nhân viên</label>
+        <select id="selectNV" class="form-select">
+          <option value="">-- Chọn nhân viên --</option>
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Từ ngày</label>
+        <input type="date" id="fromDate" class="form-control">
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Đến ngày</label>
+        <input type="date" id="toDate" class="form-control">
+      </div>
+
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn btn-success w-100" onclick="loadNhanVienDashboard()">
+          <i class="bi bi-search"></i> Xem
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THẺ THỐNG KÊ -->
+  <div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+      <div class="card stat-card stat-blue p-3">
+        <div class="stat-label">Nhân viên</div>
+        <div class="stat-value" id="statTenNV">--</div>
+        <div class="stat-label mt-1" id="statChucVu">Chức vụ: --</div>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="card stat-card stat-brown p-3">
+        <div class="stat-label">Tổng số đơn</div>
+        <div class="stat-value" id="statTongDon">0</div>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="card stat-card stat-green p-3">
+        <div class="stat-label">Tổng doanh thu</div>
+        <div class="stat-value" id="statTongDoanhThu">0 đ</div>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="card stat-card stat-orange p-3">
+        <div class="stat-label">Giá trị TB/đơn</div>
+        <div class="stat-value" id="statGiaTriTB">0 đ</div>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="card stat-card stat-purple p-3">
+        <div class="stat-label">Số ca làm</div>
+        <div class="stat-value" id="statSoCa">0</div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mt-3">
+      <div class="card stat-card stat-blue p-3">
+        <div class="stat-label">Lương cơ bản</div>
+        <div class="stat-value" id="statLuong">0 đ</div>
+        <div class="stat-label mt-1" id="statTrangThai">Trạng thái: --</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KPI CHART -->
+  <div class="card p-4 mb-4">
+    <div class="section-title mb-2"><i class="bi bi-graph-up"></i> KPI theo ngày (số đơn & doanh thu)</div>
+    <canvas id="kpiChart" height="120"></canvas>
+  </div>
+
+  <!-- CA LÀM & LỊCH SỬ ĐƠN -->
+  <div class="row g-4 mb-4">
+    <!-- Ca làm -->
+    <div class="col-md-5">
+      <div class="card p-3 h-100">
+        <div class="section-title mb-2"><i class="bi bi-calendar-week"></i> Ca làm việc</div>
+        <small class="text-muted mb-2">Danh sách ca trong khoảng thời gian đã chọn</small>
+
+        <div class="table-responsive" style="max-height: 360px; overflow-y:auto;">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+              <th>Ngày</th>
+              <th>Ca</th>
+            </tr>
+            </thead>
+            <tbody id="tblCaLam"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Đơn hàng -->
+    <div class="col-md-7">
+      <div class="card p-3 h-100">
+        <div class="section-title mb-2"><i class="bi bi-clock-history"></i> Lịch sử đơn hàng</div>
+        <small class="text-muted mb-2">Các đơn hàng do nhân viên này xử lý</small>
+
+        <div class="table-responsive" style="max-height: 360px; overflow-y:auto;">
+          <table class="table table-sm table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+              <th>Mã ĐH</th>
+              <th>Ngày lập</th>
+              <th>Khách hàng</th>
+              <th class="text-end">Tổng tiền</th>
+            </tr>
+            </thead>
+            <tbody id="tblDonHang"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API_BASE = "http://localhost:8080/api";
+  let kpiChart = null;
+
+  (function autoActiveNav() {
+    const path = window.location.pathname;
+    document.querySelectorAll(".nav-btn").forEach(btn => {
+      const page = btn.getAttribute("data-page");
+      if (!page) return;
+
+      if (page === "donhang" && path.includes("donhang.html")) btn.classList.add("nav-btn-active");
+      else if (page === "nhanvien" && path.includes("nhanvien.html")) btn.classList.add("nav-btn-active");
+      else if (page === "baocao" && path.includes("baocao.html")) btn.classList.add("nav-btn-active");
+      else if (page === "nv-dashboard" && path.includes("nhanvien-dashboard")) btn.classList.add("nav-btn-active");
+    });
+  })();
+
+  function formatMoney(value) {
+    if (value == null) return "0 đ";
+    return Number(value).toLocaleString("vi-VN") + " đ";
+  }
+
+  async function loadNhanVienList() {
+    try {
+      const res = await fetch(API_BASE + "/nhanvien");
+      const data = await res.json();
+
+      const select = document.getElementById("selectNV");
+      select.innerHTML = '<option value="">-- Chọn nhân viên --</option>';
+
+      data.forEach(nv => {
+        const opt = document.createElement("option");
+        opt.value = nv.maNV;
+        opt.textContent = nv.maNV + " - " + nv.tenNV;
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      alert("Không tải được danh sách nhân viên!");
+    }
+  }
+
+  function initDefaultDates() {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const fmt = d => d.toISOString().substring(0, 10);
+    document.getElementById("fromDate").value = fmt(firstDay);
+    document.getElementById("toDate").value = fmt(today);
+  }
+
+  async function loadNhanVienDashboard() {
+    const maNV = document.getElementById("selectNV").value;
+    const from = document.getElementById("fromDate").value;
+    const to = document.getElementById("toDate").value;
+
+    if (!maNV) return alert("Vui lòng chọn nhân viên!");
+    if (!from || !to) return alert("Vui lòng chọn khoảng thời gian!");
+
+    try {
+      const url = `${API_BASE}/nhanvien-dashboard/${maNV}?from=${from}&to=${to}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      renderSummary(data);
+      renderKpiChart(data.kpiTheoNgay);
+      renderCaLam(data.caLams);
+      renderDonHang(data.donHangs);
+    } catch (e) {
+      alert("Lỗi khi tải dashboard nhân viên!");
+    }
+  }
+
+  function renderSummary(d) {
+    document.getElementById("statTenNV").textContent = `${d.tenNV} (${d.maNV})`;
+    document.getElementById("statChucVu").textContent = "Chức vụ: " + (d.chucVu || "--");
+    document.getElementById("statTongDon").textContent = d.tongSoDon || 0;
+    document.getElementById("statTongDoanhThu").textContent = formatMoney(d.tongDoanhThu);
+    document.getElementById("statGiaTriTB").textContent = formatMoney(d.giaTriTrungBinhDon);
+    document.getElementById("statSoCa").textContent = d.soCaLam || 0;
+    document.getElementById("statLuong").textContent = formatMoney(d.luong);
+    document.getElementById("statTrangThai").textContent = "Trạng thái: " + (d.trangThaiLamViec || "--");
+
+    document.getElementById("nvInfoSmall").textContent =
+            `${d.tenNV} (${d.maNV}) • ${d.chucVu || ""} • ${d.trangThaiLamViec || ""}`;
+  }
+
+  function renderKpiChart(kpiList) {
+    const ctx = document.getElementById("kpiChart").getContext("2d");
+    const labels = kpiList.map(x => x.ngay);
+    const soDon = kpiList.map(x => x.soDon);
+    const doanhThu = kpiList.map(x => x.doanhThu);
+
+    if (kpiChart) kpiChart.destroy();
+
+    kpiChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Doanh thu (đ)",
+            data: doanhThu,
+            yAxisID: "y1",
+            backgroundColor: "rgba(110, 185, 124, 0.8)"
+          },
+          {
+            label: "Số đơn",
+            data: soDon,
+            type: "line",
+            yAxisID: "y2",
+            borderColor: "rgba(231, 76, 60, 0.9)",
+            borderWidth: 2,
+            tension: 0.2,
+            fill: false,
+            pointRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y1: {
+            position: "left",
+            ticks: { callback: value => value.toLocaleString("vi-VN") }
+          },
+          y2: {
+            position: "right",
+            grid: { drawOnChartArea: false },
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  }
+
+  function renderCaLam(caLams) {
+    const tbody = document.getElementById("tblCaLam");
+    tbody.innerHTML = "";
+
+    if (!caLams || caLams.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">Không có ca làm nào</td></tr>`;
+      return;
+    }
+
+    caLams.forEach(cl => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${cl.ngayLam}</td>
+          <td>${cl.ca}</td>
+        </tr>
+      `;
+    });
+  }
+
+  function renderDonHang(donHangs) {
+    const tbody = document.getElementById("tblDonHang");
+    tbody.innerHTML = "";
+
+    if (!donHangs || donHangs.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">Không có đơn hàng nào</td></tr>`;
+      return;
+    }
+
+    donHangs.forEach(dh => {
+      tbody.innerHTML += `
+        <tr>
+          <td>${dh.maDonHang}</td>
+          <td>${dh.ngayLap}</td>
+          <td>${dh.tenKH}</td>
+          <td class="text-end">${formatMoney(dh.tongTien)}</td>
+        </tr>
+      `;
+    });
+  }
+
+  initDefaultDates();
+  loadNhanVienList();
+</script>
+
+</body>
+</html>
